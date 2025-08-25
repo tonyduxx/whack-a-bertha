@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rent Due — Bertha Knockout</title>
+<style>
+  :root{
+    --bg:#0f1220; --ink:#e9ecf2; --panel:#171b30; --panel2:#0f1328;
+    --line:#242a4d; --good:#34d399; --warn:#ffd166; --bad:#ff6b6b; --accent:#7cc3ff;
+  }
+  *{box-sizing:border-box}
+  html,body{
+    height:100%; margin:0;
+    background:radial-gradient(1200px 800px at 60% 15%, #1b2147 0%, #0b0f20 60%, #080a16 100%);
+    color:var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  h1{margin:0;font-weight:800;letter-spacing:.4px;font-size:clamp(18px,2.6vw,28px);display:flex;gap:10px;align-items:center}
+  h1 .tag{font-size:.78em;font-weight:700;padding:4px 9px;border-radius:999px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #222643;color:#9ab}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button,.toggle{
+    background:linear-gradient(180deg,#1b2143,#141a36); border:1px solid #2a2f57; color:var(--ink);
+    padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; outline:none;
+  }
+  button:hover{filter:brightness(1.08)}
+  button.primary{background:linear-gradient(180deg,#2c865a,#1c6f49); border-color:#2b9c68}
+  button.warn{background:linear-gradient(180deg,#7a1f1f,#611515); border-color:#9c3838}
+  .hud{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #252a4a;padding:10px 12px;border-radius:14px}
+  .pill{padding:6px 10px;border-radius:999px;background:#0e1226;border:1px solid #23284a;color:#c8d2eb;font-weight:700}
+  .meter{flex:1 1 260px;background:#0b0f22;border:1px solid #1e2444;border-radius:10px;height:14px;position:relative;overflow:hidden}
+  .meter>span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#34d399,#22c55e);width:0%}
+  .meter .label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#a8b2d8;pointer-events:none}
+  canvas{
+    width:100%; height:auto; border-radius:16px;
+    background:linear-gradient(180deg,#0b1025,#090d1e 38%,#070a16);
+    border:1px solid #222647; box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 120px rgba(21,28,64,.6);
+    touch-action:none;
+  }
+  .help{font-size:14px;color:#b7c1e0;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid #252a4a;padding:10px 12px;border-radius:14px}
+  .kbd{padding:2px 6px;border-radius:6px;background:#0c1030;border:1px solid #293059;font-weight:800}
+  .watermark{position:fixed;right:12px;bottom:10px;opacity:.45;font-weight:800;letter-spacing:.8px;font-size:12px}
+  @media (max-width:560px){button{padding:8px 10px}.hud{gap:6px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🚪 Rent Due <span class="tag">Bertha Knockout</span></h1>
+      <div class="controls">
+        <button id="btnStart" class="primary">▶ Start</button>
+        <button id="btnPause">⏸ Pause</button>
+        <button id="btnReset" class="warn">⟲ Reset</button>
+        <button id="btnMute" class="toggle">🔊 Sound: On</button>
+      </div>
+    </header>
+
+    <div class="hud">
+      <span class="pill">Score: <b id="score">0</b> / <b id="goalMax">100</b></span>
+      <span class="pill">Best: <b id="best">0</b></span>
+      <span class="pill">Streak: <b id="streak">0</b></span>
+      <span class="pill">Strikes: <b id="strikes">0</b> / 3</span>
+      <span class="pill">Time: <b id="time">30</b>s</span>
+      <div class="meter" title="Rent Goal">
+        <span id="goalFill"></span>
+        <div class="label">Rent Goal: <b id="goalNow">0</b> / <b id="goalMax">100</b></div>
+      </div>
+    </div>
+    <div id="strikeX" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;pointer-events:none;"></div>
+
+    <canvas id="game" width="720" height="960" aria-label="Bertha Knockout game canvas"></canvas>
+
+    <div class="help">
+      <b>How to Play:</b> Tap/click the doors when <b>Ms. Bertha</b> pops out to <b>whack</b> her with the hammer!<br>
+      Hitting any of the other characters (<b>character 21, character 27, character 31, character 37</b>) is a <b style="color:var(--bad)">strike</b>.<br>
+      You get <b>10 points</b> every time you whack Ms. Bertha. The <b>Rent goal is 100pts</b>.<br>
+      The game is only <b>30 seconds</b> long. Ms. Bertha will only pop out of a door <b>11 times</b> per game.<br>
+      Reach the rent goal before time runs out!<br>
+      <br/>Controls: <span class="kbd">Mouse / Tap</span> to whack • <span class="kbd">Space</span> pause/resume • <span class="kbd">R</span> reset.
+    </div>
+  </div>
+
+  <div class="watermark">RENT DUE • Ms. Bertha is watching 👀</div>
+
+<script src="game.js"></script>
+</body>
+</html>
