@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whack-a-Bertha</title>
+  <style>
+    :root {
+      --bg: #0f1220; --ink: #e9ecf2; --panel: #171b30; --accent: #7cc3ff;
+      --bad: #ff6b6b; --good: #34d399;
+    }
+    html, body {
+      height: 100%; margin: 0;
+      background: radial-gradient(1200px 800px at 60% 15%, #1b2147 0%, #0b0f20 60%, #080a16 100%);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+    .wrap {
+      width: 100vw;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+      display: block;
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    h1 {
+      margin: 0; font-weight: 800; letter-spacing: .4px; font-size: clamp(18px,2.6vw,28px); display: flex; gap: 10px; align-items: center;
+    }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      background: linear-gradient(180deg,#1b2143,#141a36); border: 1px solid #2a2f57; color: var(--ink);
+      padding: 10px 14px; border-radius: 12px; font-weight: 700; cursor: pointer; outline: none;
+    }
+    button.primary { background: linear-gradient(180deg,#2c865a,#1c6f49); border-color: #2b9c68; }
+    button.warn { background: linear-gradient(180deg,#7a1f1f,#611515); border-color: #9c3838; }
+    .hud {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+      background: linear-gradient(180deg,var(--panel),#0f1328); border: 1px solid #252a4a; padding: 10px 12px; border-radius: 14px;
+    }
+    .pill { padding: 6px 10px; border-radius: 999px; background: #0e1226; border: 1px solid #23284a; color: #c8d2eb; font-weight: 700; }
+    .goal { color: var(--accent); font-weight: 800; }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      background: linear-gradient(180deg,#0b1025,#090d1e 38%,#070a16);
+      border: 1px solid #222647; box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 0 120px rgba(21,28,64,.6);
+      touch-action: none;
+      margin-bottom: 10px;
+    }
+    .help {
+      font-size: 14px; color: #b7c1e0; background: linear-gradient(180deg,var(--panel),#0f1328);
+      border: 1px solid #252a4a; padding: 10px 12px; border-radius: 14px;
+    }
+    .kbd { padding: 2px 6px; border-radius: 6px; background: #0c1030; border: 1px solid #293059; font-weight: 800; }
+    .watermark { position: fixed; right: 12px; bottom: 10px; opacity: .45; font-weight: 800; letter-spacing: .8px; font-size: 12px; }
+    @media (max-width:560px){button{padding:8px 10px}.hud{gap:6px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🚪 Whack-a-Bertha</h1>
+      <div class="controls">
+        <button id="btnStart" class="primary">▶ Start</button>
+        <button id="btnPause">⏸ Pause</button>
+        <button id="btnReset" class="warn">⟲ Reset</button>
+        <button id="btnMute" class="toggle">🔊 Sound: On</button>
+      </div>
+    </header>
+    <div class="hud">
+      <span class="pill">Score: <b id="score">0</b></span>
+      <span class="pill goal">Goal: <b id="goal">100</b></span>
+      <span class="pill">Strikes: <b id="strikes">0</b> / 3</span>
+      <span class="pill">Time: <b id="time">30</b>s</span>
+    </div>
+    <canvas id="game" aria-label="Whack-a-Bertha game canvas"></canvas>
+    <div class="help">
+      <b>How to Play:</b> Tap/click the doors when <b>Ms. Bertha</b> pops out to “whack” her with the hammer. Hitting any other character is a <b style="color:var(--bad)">strike</b>.<br>
+      <b>Controls:</b> <span class="kbd">Mouse / Tap</span> to whack • <span class="kbd">Space</span> pause/resume • <span class="kbd">R</span> reset.
+    </div>
+  </div>
+  <div class="watermark">WHACK-A-BERTHA • Ms. Bertha is watching 👀</div>
+  <script src="game.js"></script>
+  <img src="ms_bertha.png" alt="Ms Bertha" style="display:none" />
+  <img src="character_21.png" alt="Character 21" style="display:none" />
+  <img src="character_27.png" alt="Character 27" style="display:none" />
+  <img src="character_31.png" alt="Character 31" style="display:none" />
+  <img src="character_37.png" alt="Character 37" style="display:none" />
+  <img src="hammer.png" alt="Hammer" style="display:none" />
+</body>
+</html>
